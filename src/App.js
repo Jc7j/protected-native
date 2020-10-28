@@ -1,6 +1,10 @@
 import React from "react";
 import { Button } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  getFocusedRouteNameFromRoute,
+  DrawerActions,
+} from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
@@ -51,11 +55,20 @@ const App = () => {
           <RootStack.Screen
             name="Home"
             component={HomeDrawer}
-            options={{
+            options={({ route, navigation }) => ({
+              headerTitle: getFocusedRouteNameFromRoute(route),
+              headerLeft: () => (
+                <Button
+                  onPress={() =>
+                    navigation.dispatch(DrawerActions.toggleDrawer())
+                  }
+                  title="Menu"
+                />
+              ),
               headerRight: () => (
                 <Button onPress={handleSignOut} title="Sign Out" />
               ),
-            }}
+            })}
           />
         ) : (
           <>
