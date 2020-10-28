@@ -1,10 +1,25 @@
 import React from "react";
+import { Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import LandingScreen from "./screens/Landing";
 import SignInScreen from "./screens/SignIn";
+import SignUpScreen from "./screens/SignUp";
+import PasswordForgetScreen from "./screens/PasswordForget";
 import HomeScreen from "./screens/Home";
+
+const Drawer = createDrawerNavigator();
+
+const HomeDrawer = () => {
+  return (
+    <Drawer.Navigator>
+      <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="Password Forget" component={PasswordForgetScreen} />
+    </Drawer.Navigator>
+  );
+};
 
 const RootStack = createStackNavigator();
 
@@ -16,17 +31,51 @@ const App = () => {
 
     setIsAuthenticated(true);
   };
+
+  const handleSignOut = () => {
+    // TODO implement real sign out mechanism
+
+    setIsAuthenticated(false);
+  };
+
+  const handleSignUp = () => {
+    // TODO implement real sign up mechanism
+
+    setIsAuthenticated(true);
+  };
+
   return (
     <NavigationContainer>
       <RootStack.Navigator>
         {isAuthenticated ? (
-          <RootStack.Screen name="Home" component={HomeScreen} />
+          <RootStack.Screen
+            name="Home"
+            component={HomeDrawer}
+            options={{
+              headerRight: () => (
+                <Button onPress={handleSignOut} title="Sign Out" />
+              ),
+            }}
+          />
         ) : (
           <>
-            <RootStack.Screen name="Landing" component={LandingScreen} />
+            <RootStack.Screen
+              name="Landing"
+              component={LandingScreen}
+              options={{
+                animationTypeForReplace: "pop",
+              }}
+            />
             <RootStack.Screen name="Sign In">
               {(props) => <SignInScreen {...props} onSignIn={handleSignIn} />}
             </RootStack.Screen>
+            <RootStack.Screen name="Sign Up">
+              {(props) => <SignUpScreen {...props} onSignUp={handleSignUp} />}
+            </RootStack.Screen>
+            <RootStack.Screen
+              name="Password Forget"
+              component={PasswordForgetScreen}
+            />
           </>
         )}
       </RootStack.Navigator>
